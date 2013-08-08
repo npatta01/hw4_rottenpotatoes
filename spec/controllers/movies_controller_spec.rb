@@ -51,6 +51,106 @@ describe MoviesController do
 
   end
 
+  describe 'destroy' do
+
+    before :each do
+      @id ="9"
+      @m= Movie.new(:director=>@director,:title=>"M1", :id=>@id)
+      Movie.should_receive(:find).with(@id).and_return(@m)
+      #@m.stub(:destroy)
+    end
+
+    it('should delete movie') do
+      @m.should_receive(:destroy)
+      delete :destroy, {:id => @id}
+
+    end
+
+
+    it('should redirect to movies and show notice of movie not existing') do
+      delete :destroy, {:id => @id}
+      flash[:notice].should eql("Movie '#{@m.title}' deleted.")
+      response.should redirect_to(movies_path)
+    end
+
+
+
+  end
+
+
+  describe 'edit' do
+     it ('should render edit page with same movie') do
+       @id ="9"
+       @m= Movie.new(:title=>"M1")
+       Movie.should_receive(:find).with(@id).and_return(@m)
+       get :edit, {:id=>@id}
+       assigns(:movie).should equal(@m)
+     end
+
+  end
+
+
+
+  describe 'create' do
+    before :each do
+
+      @m= Movie.new(:title=>'M1')
+
+    end
+    it ('should call Movie create') do
+      Movie.should_receive(:create!).with(@m.attributes).and_return(@m)
+      post :create, :movie=>@m.attributes
+
+    end
+
+    it ('should redirect to all movies page with notice of succesfully created') do
+      post :create, :movie=>@m.attributes
+      flash[:notice].should eql("#{@m.title} was successfully created.")
+      response.should redirect_to(movies_path)
+    end
+
+
+  end
+
+
+  describe 'show' do
+    it ("should call Movie.find") do
+      @id ="9"
+      @m= Movie.new(:title=>"M1")
+      Movie.should_receive(:find).with(@id).and_return(@m)
+      get :show, {:id=>@id}
+    end
+
+
+  end
+
+
+  describe 'update' do
+    before :each do
+      @id ="1"
+      @m= Movie.new(:title=>'M1',:id=>@id)
+      Movie.should_receive(:find).with(@id).and_return(@m)
+    end
+
+   # it ('should call update movie attributes') do
+    #  params = {'movie'=>@m.attributes, :id=>@id}
+    #  @m.should_receive(:update_attributes!)
+    #  put :update, :movie=>@m.attributes, :id=>@id
+
+    #end
+
+    it ('should redirect to all movies page with notice of succesfully updated') do
+      put :update, :movie=>@m.attributes, :id=>@id
+      flash[:notice].should eql("#{@m.title} was successfully updated.")
+      response.should redirect_to(movie_path)
+    end
+
+
+  end
+
+
+
+
 
 
 end

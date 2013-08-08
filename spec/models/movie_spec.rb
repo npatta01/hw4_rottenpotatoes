@@ -13,4 +13,12 @@ describe Movie do
     similar_movies.count.should==1
 
   end
+
+  it ('should return expected movie ratings') do
+    expected =%w(G PG PG-13 NC-17 R)
+    actual = Movie.all_ratings
+
+    actual.should match_array expected
+  end
+
 end
